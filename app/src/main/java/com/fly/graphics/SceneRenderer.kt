@@ -67,7 +67,8 @@ class SceneRenderer(scene: Scene? = null,private var camera: Camera = Camera()) 
     }
 
     /*绘制文本*/
-    override fun DrawText(canvas: Canvas, text:String, x:Float, y:Float) { canvas.drawText(text,x - camera.look_at_x,y - camera.look_at_y,paint) }
+    override fun DrawText(canvas: Canvas, text:String, x:Float, y:Float)
+    { canvas.drawText(text,(x - camera.look_at_x) * width_ratio,(y - camera.look_at_y) * height_ratio,paint) }
 
     /*绘图方法*/
     //override fun DrawBitmap(canvas: Canvas, bitmap: Bitmap, matrix: Matrix) { canvas.drawBitmap(bitmap,matrix,super.GetPaint()) }
@@ -172,7 +173,7 @@ class SceneRenderer(scene: Scene? = null,private var camera: Camera = Camera()) 
     }
 
     /*绘制精灵*/
-    override fun DrawSprite(canvas: Canvas, sprite:Sprite, x:Float, y: Float, width:Float, height:Float, index:Int)
+    fun DrawSprite(canvas: Canvas, sprite:Sprite, x:Float, y: Float, width:Float, height:Float, index:Int)
     {
         val dst:RectF = RectF((x - camera.look_at_x) * width_ratio,(y - camera.look_at_y) * height_ratio,
             (x - camera.look_at_x) * width_ratio + width * width_ratio,(y - camera.look_at_y) * height_ratio + height * height_ratio)
@@ -182,14 +183,18 @@ class SceneRenderer(scene: Scene? = null,private var camera: Camera = Camera()) 
             width * width_ratio, height * height_ratio, index)
          */
     }
-    override fun DrawSprite(canvas: Canvas, sprite:Sprite, x:Float, y: Float, width:Float, height:Float, index:Int, flip_x:Float, flip_y: Float)
+
+    /*
+    fun DrawSprite(canvas: Canvas, sprite:Sprite, x:Float, y: Float, width:Float, height:Float, index:Int, flip_x:Float, flip_y: Float)
     {
         super.DrawSprite(canvas,sprite,(x - camera.look_at_x) * width_ratio, (y - camera.look_at_y) * height_ratio,
             width * width_ratio, height * height_ratio, index, flip_x, flip_y)
     }
+     */
 
+    /*
     /*绘制物体*/
-    override fun DrawObject(canvas: Canvas, obj: Object, width: Float, height: Float, index: Int)
+    fun DrawObject(canvas: Canvas, obj: Object, width: Float, height: Float, index: Int)
     {
         /*
         val obj_x = obj.x * width_ratio
@@ -245,5 +250,12 @@ class SceneRenderer(scene: Scene? = null,private var camera: Camera = Camera()) 
         obj_next_y = null
         */
     }
+    */
 
 }
+
+
+
+
+
+

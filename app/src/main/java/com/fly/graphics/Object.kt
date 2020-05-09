@@ -140,7 +140,7 @@ open class Object(scene: Scene? = null,var x:Float = 0f, var y:Float = 0f)//物�
                 render_last_end = end_index//上次动画结束索引 = 此次动画结束索引
             }
         }
-        renderer.DrawObject(canvas,this,width,height,render_index)//渲染物体
+        this.Render(canvas,renderer,width,height,render_index)//渲染物体
         if (render_n >= frame)//动画渲染次数  >= 切换帧所需次数
         {
             render_n = 0;//重置动画渲染次数
@@ -156,8 +156,26 @@ open class Object(scene: Scene? = null,var x:Float = 0f, var y:Float = 0f)//物�
 
     /*渲染物体*/
     //fun Render(canvas: Canvas, renderer: Renderer) { renderer.DrawObject(canvas,this) }
-    fun Render(canvas: Canvas, renderer: Renderer) { renderer.DrawObject(canvas,this) }
-    fun Render(canvas: Canvas, renderer: Renderer,index: Int) { renderer.DrawObject(canvas,this,width, height,index) }
-    fun Render(canvas: Canvas, renderer: Renderer, width: Float = this.width, height: Float = this.height, index: Int)
-    { renderer.DrawObject(canvas,this,width,height,index) }
+
+    fun Render(canvas: Canvas, renderer: Renderer) {
+        this.Render(canvas, renderer)
+    }
+
+    fun Render(canvas: Canvas, renderer: Renderer,index: Int) {
+        this.Render(canvas, renderer,this.width,this.height,index)
+    }
+
+    fun Render(canvas: Canvas, renderer: Renderer, width: Float = this.width, height: Float = this.height, index: Int = 0)
+    {
+        this.GetSprite()?.let{ it.Render(canvas, renderer,this.x,this.y,width,height,index) }//绘制物体精灵
+    }
 }
+
+
+
+
+
+
+
+
+

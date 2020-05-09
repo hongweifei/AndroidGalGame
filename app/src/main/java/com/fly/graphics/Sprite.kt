@@ -86,23 +86,33 @@ open class Sprite(path:String? = null, asset_manager: AssetManager? = null)//精
 
     /*精灵渲染函数*/
     //fun render(canvas: Canvas, renderer:Renderer) { renderer.DrawSprite(canvas,this) }
-    fun Render(canvas: Canvas, renderer:Renderer) { renderer.DrawSprite(canvas,this) }
+    fun Render(canvas: Canvas, renderer:Renderer,x: Float = 0f,y:Float = 0f)
+    {
+        val dst:RectF = RectF(x,y,x + width,y + height)//精灵绘制坐标及宽高
+        this.GetBitmap()?.let { canvas.drawBitmap(it,this.GetSrcRect(0),dst,renderer.GetPaint()) }//绘制精灵bitmap
+    }
+
     fun Render(canvas: Canvas, renderer: Renderer,x:Float,y:Float,width: Float = this.width,height: Float = this.height,index:Int = 0)
-    { bitmap?.let { renderer.DrawSprite(canvas,this,x, y, width, height, index) } }
+    {
+        val dst:RectF = RectF(x,y,x + width,y + height)//精灵绘制坐标及宽高
+        this.GetBitmap()?.let { canvas.drawBitmap(it,this.GetSrcRect(index),dst,renderer.GetPaint()) }//绘制精灵bitmap
+    }
+
     fun RenderSpriteAnimation(canvas: Canvas,renderer: Renderer,x:Float,y:Float,begin_index:Int = 0,end_index:Int = 0,FPS:Int = 0)
     {
         if (!render_animation) { render_index = begin_index;render_animation = true }
-        Render(canvas,renderer,x,y,width,height,render_index)
+        this.Render(canvas,renderer,x,y,width,height,render_index)
         if (render_n >= FPS) { render_n = 0;render_index++ }
         else if (render_n < FPS) { render_n++ }
         if (render_index > end_index)
             render_animation = false
     }
+
     /*渲染精灵动画*/
     fun RenderSpriteAnimation(canvas: Canvas,renderer: Renderer,x: Float,y: Float,width: Float = this.width,height: Float = this.height,begin_index:Int = 0,end_index:Int = 0,FPS:Int = 0)
     {
         if (!render_animation) { render_index = begin_index;render_animation = true }
-        Render(canvas,renderer,x,y,width,height,render_index)
+        this.Render(canvas,renderer,x,y,width,height,render_index)
         if (render_n >= FPS) { render_n = 0;render_index++ }
         else if (render_n < FPS) { render_n++ }
         if (render_index > end_index)

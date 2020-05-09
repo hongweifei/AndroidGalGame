@@ -7,11 +7,10 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.Display
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
-import androidx.core.content.ContextCompat.getSystemService
+import com.fly.widget.WidgetLoop
 
 class Scene(context : Context?,attrs:AttributeSet?) : View(context,attrs)//场景类
 {
@@ -19,6 +18,11 @@ class Scene(context : Context?,attrs:AttributeSet?) : View(context,attrs)//场�
     private var click:(event: MotionEvent?)->Unit = {}
     private var up:(event: MotionEvent?)->Unit = {}
     private var move:(event: MotionEvent?)->Unit = {}
+
+    private var render:(renderer:Renderer,canvas:Canvas)->Unit = { renderer: Renderer, canvas: Canvas -> }
+    protected var render_time:Long = 0//渲染时间
+
+    private var widget_loop:WidgetLoop ?= null;
 
     /*渲染器及场景背景颜色*/
     private var scene_renderer : SceneRenderer? = null
@@ -31,13 +35,15 @@ class Scene(context : Context?,attrs:AttributeSet?) : View(context,attrs)//场�
     protected var height_ratio:Float
     //private var FPS:Float = wm.defaultDisplay.refreshRate
 
-    protected var scene_width = 16f
-    protected var scene_height = 9f
+    protected var scene_width:Float
+    protected var scene_height:Float
 
     init
     {
         /*初始化宽高比及场景渲染器*/
         wm.defaultDisplay.getMetrics(dm)
+        scene_width = 16f;
+        scene_height = 9f;
         width_ratio = dm.widthPixels / scene_width
         height_ratio = dm.heightPixels / scene_height
         scene_renderer?.SetWidthRatio(width_ratio)
@@ -55,7 +61,15 @@ class Scene(context : Context?,attrs:AttributeSet?) : View(context,attrs)//场�
 
         canvas?.drawColor(bg_color)//绘制场景背景颜色
 
-        if (canvas != null) { scene_renderer?.Display(canvas) }//调用渲染器渲染函数
+        //if (canvas != null) { //scene_renderer?.Display(canvas) }//调用渲染器渲染函数
+
+        val begin_time = System.currentTimeMillis();
+        if (this.scene_renderer != null && canvas != null)
+            this.render(this.scene_renderer!!,canvas);
+        render_time = begin_time - System.currentTimeMillis();
+
+        if(widget_loop != null)
+            widget_loop!!.WidgetMainLoop(canvas)
 
         if(scene_renderer?.GetLayerType() != LAYER_TYPE_HARDWARE)
             setLayerType(LAYER_TYPE_SOFTWARE,scene_renderer?.GetPaint())
@@ -81,6 +95,8 @@ class Scene(context : Context?,attrs:AttributeSet?) : View(context,attrs)//场�
         if (event?.action == MotionEvent.ACTION_MOVE)
             move(event)
 
+        widget_loop?.SetTouchPosition(event?.x!!,event?.y!!);
+
         return true
     }
 
@@ -92,6 +108,7 @@ class Scene(context : Context?,attrs:AttributeSet?) : View(context,attrs)//场�
     fun GetSceneWidthRatio() : Float { return width_ratio }
     fun GetSceneHeightRatio() : Float { return height_ratio }
     fun GetSceneRenderer() : SceneRenderer? { return scene_renderer }
+    fun GetWidgetLoop() : WidgetLoop? { return widget_loop }
 
     /*设置场景宽高*/
     fun SetSceneWidth(width:Float) { scene_width = width;width_ratio = dm.widthPixels / scene_width;scene_renderer?.SetWidthRatio(width_ratio) }
@@ -101,10 +118,17 @@ class Scene(context : Context?,attrs:AttributeSet?) : View(context,attrs)//场�
     fun SetClick(click:(event: MotionEvent?)->Unit){ this.click = click }
     fun SetUp(up:(event: MotionEvent?)->Unit){ this.up = up }
     fun SetMove(move:(event: MotionEvent?)->Unit){ this.move = move }
+    fun SetRender(render:(renderer:Renderer,canvas:Canvas)->Unit) { this.render = render; }
 
     /*设置场景渲染相关成员*/
     fun SetBackGroundColor(color:Int) { bg_color = color }
     fun SetCamera(camera: Camera){ scene_renderer?.SetCamera(camera) }
     fun SetSceneRenderer(r : SceneRenderer) { scene_renderer = r;scene_renderer!!.SetWidthRatio(width_ratio);scene_renderer!!.SetHeightRatio(height_ratio) }
-
+    fun SetWidgetLoop(widgetLoop: WidgetLoop) { this.widget_loop = widgetLoop }
 }
+
+
+
+
+
+

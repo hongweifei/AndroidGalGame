@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.MotionEvent
@@ -11,7 +13,11 @@ import android.view.View
 import android.view.WindowManager
 import com.fly.graphic.Camera
 import com.fly.graphic.SceneRenderer
-import com.fly.rpggame.R
+import com.fly.galgame.R
+import com.fly.graphic.Renderer
+import com.fly.widget.Button
+import com.fly.widget.Label
+import com.fly.widget.WidgetLoop
 import kotlinx.android.synthetic.main.game.*
 
 
@@ -59,9 +65,19 @@ class Game : Activity() , View.OnTouchListener
         width = 16f
         height = 9f
 
+        val widgetLoop:WidgetLoop = WidgetLoop();
+        val label = Label("Hello Java World And Kotlin World!",0f,2f * scene.GetSceneHeightRatio());
+        label.GetPaint().style = Paint.Style.STROKE;
+        widgetLoop.AddWidgetToLoop(label);
+
+        val button:Button = Button("Button1",100f,100f,100f,50f);
+        widgetLoop.AddWidgetToLoop(button);
+
+        scene.SetWidgetLoop(widgetLoop);
         scene.SetSceneRenderer(renderer);
-        renderer.SetDisplay {
-        }
+        scene.SetRender(){ renderer: Renderer, canvas: Canvas -> }
+
+        Game();
     }
 
     fun Game()

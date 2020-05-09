@@ -9,8 +9,7 @@ import android.view.View.LAYER_TYPE_SOFTWARE
 
 open class Renderer()//渲染器
 {
-    private var render : (canvas : Canvas) -> Unit = {};//渲染器渲染事件
-    protected var render_time:Long = 0//渲染时间
+    //private var render : (canvas : Canvas) -> Unit = {};//渲染器渲染事件
     protected var paint : Paint = Paint()//画笔
     private var layer_type = LAYER_TYPE_HARDWARE
 
@@ -35,6 +34,7 @@ open class Renderer()//渲染器
         paint.textScaleX = 1f;//只会将水平方向拉伸  高度不会变
     }
 
+    /*
     /*设置渲染器渲染事件*/
     fun SetDisplay(Display: (canvas : Canvas) -> Unit) { render = Display }
     /*渲染器渲染事件*/
@@ -44,6 +44,7 @@ open class Renderer()//渲染器
         render(canvas);
         render_time = System.currentTimeMillis() - begin_time
     }
+     */
 
     /*设置画笔各项属性*/
     fun SetStrokeWidth(stroke_width:Float) { paint.strokeWidth = stroke_width }
@@ -59,7 +60,7 @@ open class Renderer()//渲染器
     fun GetWidth(canvas: Canvas) : Int { return canvas.width }
     fun GetPaint() : Paint { return paint }
     fun GetLayerType() : Int { return layer_type }
-    fun GetRenderTime() : Long { return render_time }
+    //fun GetRenderTime() : Long { return render_time }
 
     /*各种绘制函数*/
     open fun DrawPoint(canvas: Canvas, x:Float, y:Float){ canvas.drawPoint(x,y,paint) }
@@ -129,74 +130,6 @@ open class Renderer()//渲染器
         canvas.drawBitmap(bitmap,left,top,paint)
     }
 
-    /*绘制精灵*/
-    open fun DrawSprite(canvas: Canvas, sprite:Sprite, x:Float = 0f, y: Float = 0f, width:Float = sprite.width, height:Float = sprite.height, index:Int = 0)
-    {
-        val dst:RectF = RectF(x,y,x + width,y + height)//精灵绘制坐标及宽高
-        sprite.GetBitmap()?.let { canvas.drawBitmap(it,sprite.GetSrcRect(index),dst,paint) }//绘制精灵bitmap
-    }
-    open fun DrawSprite(canvas: Canvas, sprite:Sprite, x:Float = 0f, y: Float = 0f, width:Float = sprite.width, height:Float = sprite.height, index:Int = 0, flip_x:Float = 1f, flip_y: Float = 1f)
-    {
-        val dst:RectF = RectF(x,y,x + width,y + height)
-        val matrix:Matrix = Matrix()
 
-        matrix.setScale(flip_x,flip_y)
-        matrix.postTranslate(x, y)
-        matrix.setRectToRect(sprite.GetSrcRectF(index),dst,null)
-
-        sprite.GetBitmap()?.let { canvas.drawBitmap(it,matrix,paint) }
-    }
-
-    /*绘制物体*/
-    open fun DrawObject(canvas: Canvas, obj: Object, width: Float = obj.width, height: Float = obj.height, index: Int = 0)
-    {
-        //obj_last_x = obj.x
-        //obj_last_y = obj.y
-        /*
-        if (obj.GetRigid() != null)
-        {
-            if (obj.GetCollisionBox() != null)
-            {
-                obj.GetCollisionBox()!!.SetRect(RectF(obj.x,obj.y,obj.x + width,obj.y + height))
-                if (!obj.GetCollisionBox()!!.Collision())
-                {
-                    val will_y = obj.y + obj.GetRigid()!!.GetDropHeight(render_time)
-                    obj.GetCollisionBox()!!.SetRect(RectF(obj.x,will_y,obj.x + width,will_y + height))
-                    if (obj.GetCollisionBox()!!.Collision())
-                    {
-                        if (will_y + height > obj.GetCollisionBox()!!.GetCollisionRect().top)
-                        {
-                            if (!(will_y + height < obj.GetCollisionBox()!!.GetCollisionRect().top + 10f))
-                                obj.y -= will_y + height - obj.GetCollisionBox()!!.GetCollisionRect().top
-                            else
-                                obj_next_y = obj.GetCollisionBox()!!.GetCollisionRect().top - height
-                        }
-                    }
-                    else
-                    {
-                        //obj.GetCollisionBox()!!.SetRect(RectF(obj.x,obj.y,obj.x + width,obj.y + height))
-                        for (i in 0 until obj.GetCollisionBox()!!.GetAllCollisionRect().size)
-                        {
-                            if (obj.y > obj.GetCollisionBox()!!.GetAllCollisionRect()[i].bottom && obj_last_y!! + height < obj.GetCollisionBox()!!.GetAllCollisionRect()[i].top)
-                            {
-                                obj.y = obj.GetCollisionBox()!!.GetAllCollisionRect()[i].top - height
-                                return
-                            }
-                        }
-                        obj.y += obj.GetRigid()!!.GetDropHeight(render_time)
-                    }
-                }
-            }
-            else
-                obj.y += obj.GetRigid()!!.GetDropHeight(render_time)
-        }
-        */
-        obj.GetSprite()?.let { DrawSprite(canvas, it,obj.x,obj.y,width,height,index) }//绘制物体精灵
-        /*
-        if (obj_next_y != null)
-            obj.y = obj_next_y!!
-        obj_next_y = null
-        */
-    }
 
 }
