@@ -20,22 +20,8 @@ public class Widget
 
     protected Paint paint = new Paint();
 
-    public Widget()
-    {
-        x = 0;
-        y = 0;
-        width = 0;
-        height = 0;
-    }
-
-    public Widget(float x,float y)
-    {
-        this.x = x;
-        this.y = y;
-        this.width = 0;
-        this.height = 0;
-    }
-
+    public Widget() { this(0f,0f); }
+    public Widget(float x,float y) { this(x,y,0f,0f); }
     public Widget(float x,float y,float w,float h)
     {
         this.x = x;

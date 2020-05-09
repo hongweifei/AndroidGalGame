@@ -6,13 +6,12 @@ import android.util.Log;
 
 public class Button extends Label
 {
-    public Button() { super(); this.type = Widget.TYPE_BUTTON; }
-
-    public Button(float x,float y) { super(x,y); this.type = Widget.TYPE_BUTTON; }
+    public Button() { this(0f,0f); }
+    public Button(float x,float y) { this(x,y,0f,0f); }
     public Button(float x,float y,float w,float h) { super(x, y, w, h); this.type = Widget.TYPE_BUTTON; }
 
-    public Button(String text) { super(); this.text = text; this.type = Widget.TYPE_BUTTON; }
-    public Button(String text,float x,float y) { super(x, y); this.text = text; this.type = Widget.TYPE_BUTTON; }
+    public Button(String text) { this(text,0f,0f); }
+    public Button(String text,float x,float y) { this(text,x,y,0f,0f); }
     public Button(String text,float x,float y,float w,float h) { super(x, y, w, h); this.text = text; this.type = Widget.TYPE_BUTTON; }
 
     @Override public void Render(Canvas canvas)
